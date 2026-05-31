@@ -1,0 +1,47 @@
+/*##########################################################*/
+/*#                                                        #*/
+/*#  MYFOLDER.RC          (c) IBM Japan, 1993              #*/
+/*#   (C) Copyright Tokyo Research Laboratory,             #*/
+/*#   IBM Research 1993                                    #*/
+/*#                                                        #*/
+/*#   1993-01-28(THU) Toru Aihara                          #*/
+/*#     Folder with menu-bar (like PSZFolder)              #*/
+/*#                                                        #*/
+/*#   Module Name: MYFOLDER.DLL                            #*/
+/*#   Class Name:  MyFolder                                #*/
+/*##########################################################*/
+/*#  New features:                                         #*/
+/*#   - Menu bar                                           #*/
+/*#   - Change views between icon and details views        #*/
+/*#     without opening new windows.                       #*/
+/*##########################################################*/
+
+#include "myfolder.ih"
+
+MENU ID_MBMENU LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+   SUBMENU  "~Folder",              IDM_FOLDER
+   BEGIN
+      MENUITEM "~Contents",           0x0130,MIS_TEXT,MIA_DISABLED|MIA_CHECKED
+      MENUITEM "~Tree view",          0x007B
+      MENUITEM "~Settings",           0x0070
+   END
+   SUBMENU  "~View",                IDM_VIEW
+   BEGIN
+      MENUITEM "~Icons",              IDM_VIEW_ICON
+      MENUITEM "~Tree",               IDM_VIEW_TREE,MIS_TEXT,MIA_DISABLED
+      MENUITEM "~Details",            IDM_VIEW_DETAILS
+      MENUITEM SEPARATOR
+      MENUITEM "~Settings",           0x0070,MIS_TEXT,MIA_DISABLED
+   END
+   SUBMENU  "~Help",                IDM_MYHELP
+   BEGIN
+      MENUITEM "~General help",       0x025A
+      MENUITEM "~Using help",         0x0259
+      MENUITEM "~Keys help",          0x025B
+      MENUITEM "~Tutorial",           IDM_MYHELP_TUTORIAL
+      MENUITEM SEPARATOR
+      MENUITEM "~Product Information",IDM_PRODUCTINFO
+   END
+END
+

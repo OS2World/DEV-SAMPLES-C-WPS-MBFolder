@@ -1,0 +1,139 @@
+
+ MBFOLDER
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000105CH CODE32                 CODE 32-bit
+ 0002:00000000 000000004H DDE4_DATA32            DATA 32-bit
+ 0003:00000000 0000005DCH DATA32                 DATA 32-bit
+ 0003:000005DC 000000000H CONST32                CONST 32-bit
+ 0003:000005DC 000000000H BSS32                  BSS 32-bit
+ 0003:000005DC 000000010H c_common               BSS 32-bit
+
+ Origin   Group
+ 0003:0   DGROUP
+ 0000:0   FLAT
+
+ Address       Export                  Alias
+
+ 0003:00000004 MbFolderCClassData      MbFolderCClassData
+ 0003:00000000 MbFolderClassData       MbFolderClassData
+ 0001:00000224 MbFolderNewClass        MbFolderNewClass
+ 0003:00000010 M_MbFolderCClassData    M_MbFolderCClassData
+ 0003:0000000C M_MbFolderClassData     M_MbFolderClassData
+ 0001:00000614 M_MbFolderNewClass      M_MbFolderNewClass
+
+  Address         Publics by Name
+
+ 0003:000005DC       @BSSMBFOLDER.C
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0000:00000000  Imp  DosFreeModule        (DOSCALLS.322)
+ 0000:00000000  Imp  DosFreeResource      (DOSCALLS.353)
+ 0000:00000000  Imp  DosGetResource       (DOSCALLS.352)
+ 0000:00000000  Imp  DosQueryModuleHandle (DOSCALLS.319)
+ 0003:000005E4       hmodThisClass
+ 0003:00000004       MbFolderCClassData
+ 0003:00000000       MbFolderClassData
+ 0001:00000DA4       mbfoldercls_wpclsInitData
+ 0001:00000E7C       mbfoldercls_wpclsUnInitData
+ 0001:00000224       MbFolderNewClass
+ 0001:00000764       mbfolder_wpMenuItemSelected
+ 0001:00000C1C       mbfolder_wpOpen
+ 0003:00000010       M_MbFolderCClassData
+ 0003:0000000C       M_MbFolderClassData
+ 0001:00000614       M_MbFolderNewClass
+ 0000:00000000  Imp  M_WPFolderNewClass   (PMWP.315)
+ 0000:00000000  Imp  M_WPObjectClassData  (PMWP.323)
+ 0003:000005E8       pmtMenu
+ 0003:00000018       pszClassName
+ 0003:0000001C       pszModuleName
+ 0003:00000020       pszProductInfo
+ 0003:00000024       pszSorryInfo
+ 0001:00000F8C       QueryDetailsView
+ 0000:00000000  Imp  SOMClassClassData    (som.3)
+ 0000:00000000  Imp  SOMClassMgrClassData (som.6)
+ 0000:00000000  Imp  SOMClassMgrObject    (som.7)
+ 0000:00000000  Imp  somConstructClass    (som.28)
+ 0000:00000000  Imp  somDataResolve       (som.47)
+ 0000:00000000  Imp  somEnvironmentNew    (som.30)
+ 0000:00000000  Imp  SOMError             (som.9)
+ 0000:00000000  Imp  somIdFromString      (som.31)
+ 0000:00000000  Imp  somParentResolve     (som.33)
+ 0000:00000000  Imp  somPrintf            (som.35)
+ 0000:00000000  Imp  somResolve           (som.37)
+ 0000:00000000  Imp  somTestCls           (som.42)
+ 0000:00000000  Imp  SOM_TraceLevel       (som.18)
+ 0001:00000EF0       UpdateContainer
+ 0000:00000000  Imp  WinCreateMenu        (PMWIN.907)
+ 0000:00000000  Imp  WinInvalidateRect    (PMWIN.765)
+ 0000:00000000  Imp  WinMessageBox        (PMWIN.789)
+ 0000:00000000  Imp  WinSendMsg           (PMWIN.920)
+ 0000:00000000  Imp  WinWindowFromID      (PMWIN.899)
+ 0000:00000000  Imp  WPFolderClassData    (PMWP.14)
+ 0000:00000000  Imp  WPFolderNewClass     (PMWP.15)
+ 0000:00000000  Imp  WPObjectClassData    (PMWP.23)
+ 0002:00000000       _dllentry
+ 0001:00001054       _DLL_InitTerm
+ 0001:0000104C       _DosFlatToSel
+ 0001:00001044       _DosSelToFlat
+ 0003:000005DC       _edata
+ 0003:000005EC       _end
+
+  Address         Publics by Value
+
+ 0000:00000000  Imp  somPrintf            (som.35)
+ 0000:00000000  Imp  WPFolderClassData    (PMWP.14)
+ 0000:00000000  Imp  SOMClassMgrClassData (som.6)
+ 0000:00000000  Imp  WinInvalidateRect    (PMWIN.765)
+ 0000:00000000  Imp  SOMError             (som.9)
+ 0000:00000000  Imp  WinMessageBox        (PMWIN.789)
+ 0000:00000000  Imp  WinSendMsg           (PMWIN.920)
+ 0000:00000000  Imp  WPObjectClassData    (PMWP.23)
+ 0000:00000000  Imp  DosGetResource       (DOSCALLS.352)
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0000:00000000  Imp  SOMClassMgrObject    (som.7)
+ 0000:00000000  Imp  DosFreeModule        (DOSCALLS.322)
+ 0000:00000000  Imp  somTestCls           (som.42)
+ 0000:00000000  Imp  somConstructClass    (som.28)
+ 0000:00000000  Imp  SOM_TraceLevel       (som.18)
+ 0000:00000000  Imp  WinWindowFromID      (PMWIN.899)
+ 0000:00000000  Imp  WPFolderNewClass     (PMWP.15)
+ 0000:00000000  Imp  DosFreeResource      (DOSCALLS.353)
+ 0000:00000000  Imp  M_WPFolderNewClass   (PMWP.315)
+ 0000:00000000  Imp  somIdFromString      (som.31)
+ 0000:00000000  Imp  WinCreateMenu        (PMWIN.907)
+ 0000:00000000  Imp  somParentResolve     (som.33)
+ 0000:00000000  Imp  M_WPObjectClassData  (PMWP.323)
+ 0000:00000000  Imp  DosQueryModuleHandle (DOSCALLS.319)
+ 0000:00000000  Imp  somEnvironmentNew    (som.30)
+ 0000:00000000  Imp  somResolve           (som.37)
+ 0000:00000000  Imp  somDataResolve       (som.47)
+ 0000:00000000  Imp  SOMClassClassData    (som.3)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0001:00000224       MbFolderNewClass
+ 0001:00000614       M_MbFolderNewClass
+ 0001:00000764       mbfolder_wpMenuItemSelected
+ 0001:00000C1C       mbfolder_wpOpen
+ 0001:00000DA4       mbfoldercls_wpclsInitData
+ 0001:00000E7C       mbfoldercls_wpclsUnInitData
+ 0001:00000EF0       UpdateContainer
+ 0001:00000F8C       QueryDetailsView
+ 0001:00001044       _DosSelToFlat
+ 0001:0000104C       _DosFlatToSel
+ 0001:00001054       _DLL_InitTerm
+ 0002:00000000       _dllentry
+ 0003:00000000       MbFolderClassData
+ 0003:00000004       MbFolderCClassData
+ 0003:0000000C       M_MbFolderClassData
+ 0003:00000010       M_MbFolderCClassData
+ 0003:00000018       pszClassName
+ 0003:0000001C       pszModuleName
+ 0003:00000020       pszProductInfo
+ 0003:00000024       pszSorryInfo
+ 0003:000005DC       @BSSMBFOLDER.C
+ 0003:000005DC       _edata
+ 0003:000005E4       hmodThisClass
+ 0003:000005E8       pmtMenu
+ 0003:000005EC       _end
+
+Program entry point at 0001:1054

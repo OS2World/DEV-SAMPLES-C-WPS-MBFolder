@@ -1,0 +1,2 @@
+nmake mbfolder.mak > err
+
