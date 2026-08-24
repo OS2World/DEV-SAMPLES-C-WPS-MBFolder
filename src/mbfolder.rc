@@ -1,0 +1,47 @@
+/*############################################################*/
+/*#  MBFOLDER.RC            (c) IBM Japan, 1993              #*/
+/*#   (C) Copyright Tokyo Research Laboratory,               #*/
+/*#   IBM Research 1993                                      #*/
+/*#                                                          #*/
+/*#   Module Name: MBFOLDER.DLL                              #*/
+/*#   Class Name:  MbFolder                                  #*/
+/*############################################################*/
+
+/* PORTING NOTE: the original included "myfolder.ih" - a stale name left
+ * over from an earlier revision of the sample, which only worked because
+ * the old generated IH happened to carry the ID defines.  The IDs now
+ * live in mbids.h. */
+
+/* Menu style constants (MIS_*, MIA_*) live in pmwin.h, pulled in via
+ * os2.h under INCL_WIN - the old generated IH provided this context
+ * for the resource pass as well. */
+#define INCL_WIN
+#include <os2.h>
+#include "..\h\mbids.h"
+
+MENU ID_MBMENU LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+   SUBMENU  "~Folder",              IDM_FOLDER
+   BEGIN
+      MENUITEM "~Contents",           0x0130,MIS_TEXT,MIA_DISABLED|MIA_CHECKED
+      MENUITEM "~Tree view",          0x007B
+      MENUITEM "~Settings",           0x0070
+   END
+   SUBMENU  "~View",                IDM_VIEW
+   BEGIN
+      MENUITEM "~Icons",              IDM_VIEW_ICON
+      MENUITEM "~Tree",               IDM_VIEW_TREE,MIS_TEXT,MIA_DISABLED
+      MENUITEM "~Details",            IDM_VIEW_DETAILS
+      MENUITEM SEPARATOR
+      MENUITEM "~Settings",           0x0070,MIS_TEXT,MIA_DISABLED
+   END
+   SUBMENU  "~Help",                IDM_MYHELP
+   BEGIN
+      MENUITEM "~General help",       0x025A
+      MENUITEM "~Using help",         0x0259
+      MENUITEM "~Keys help",          0x025B
+      MENUITEM "~Tutorial",           IDM_MYHELP_TUTORIAL
+      MENUITEM SEPARATOR
+      MENUITEM "~Product Information",IDM_PRODUCTINFO
+   END
+END

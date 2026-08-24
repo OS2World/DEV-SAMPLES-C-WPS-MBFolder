@@ -1,0 +1,67 @@
+/*
+ * mbfolder.idl - MbFolder interface definition.
+ *
+ * Converted from the SOM 1.0 precompiler format (MBFOLDER.SC, produced by
+ * 'spc' 1.22 / 'emitcsc' 1.10) to SOM IDL for the modern SOM compiler (sc).
+ *
+ * Original class:
+ *   (C) IBM Japan / IBM Tokyo Research Laboratory, 1993, Toru Aihara.
+ *   MbFolder = a WPFolder subclass that adds a menu bar to open folder
+ *   views and switches icon/details views without opening new windows.
+ *
+ * Conversion notes (full story in README.md):
+ *   - 'class:'/'parent class:' syntax  -> 'interface X : Parent' syntax
+ *   - 'override x, class;'             -> metaclass interface M_MbFolder
+ *                                         with its own override list
+ *   - overrides use the SOM IDL 'methodname: override;' statement form
+ *     (as in all Workplace Shell / XWorkplace .idl files), NOT an
+ *     'override' keyword followed by names - sc rejects that with
+ *     '"override" has not been declared'
+ *   - 'external prefix ='/'class prefix =' -> 'externalprefix ='
+ *     ('functionprefix' additionally on the metaclass)
+ *   - menu/resource IDs moved OUT of generated headers into mbids.h
+ *     (they were emitted by the old precompiler; sc will not emit them)
+ */
+
+#include <wpfolder.idl>
+
+interface M_MbFolder;                   /* forward: metaclass is declared below */
+
+interface MbFolder : WPFolder           /* was: parent class: WPFolder          */
+{
+#ifdef __SOMIDL__
+    implementation
+    {
+        /* no new instance methods -> no releaseorder needed */
+        externalprefix = mbfolder_;     /* was: external prefix = mbfolder_     */
+        majorversion   = 1;             /* was: major version = 1               */
+        minorversion   = 1;             /* was: minor version = 1               */
+        filestem       = mbfolder;      /* was: file stem = MBFOLDER            */
+        metaclass      = M_MbFolder;
+        callstyle      = oidl;
+        dllname        = "mbfolder.dll";
+
+        /* was: override wpMenuItemSelected, wpOpen; */
+        wpMenuItemSelected: override;
+        wpOpen:             override;
+    };
+#endif
+};
+
+interface M_MbFolder : M_WPFolder       /* metaclass: holds the wpcls* overrides */
+{
+#ifdef __SOMIDL__
+    implementation
+    {
+        /* no new class methods -> no releaseorder needed */
+        externalprefix = mbfoldercls_;  /* was: class prefix = mbfoldercls_     */
+        functionprefix = mbfoldercls_;
+        filestem       = mbfolder;      /* must be same as above                */
+        callstyle      = oidl;
+        dllname        = "mbfolder.dll";
+
+        wpclsInitData:   override;
+        wpclsUnInitData: override;
+    };
+#endif
+};
