@@ -1,3 +1,5 @@
+# DEV-SAMPLES-C-WPS-MBFolder
+
 # MbFolder for ArcaOS / OS/2 - Workplace Shell sample class, modernized
 
 **Version 1.1** - ported edition of IBM Japan's 1993 *MbFolder* Workkplace
@@ -15,6 +17,12 @@ precompiler** format to modern **SOM IDL**, and retargets the build from IBM
 C Set (`icc`/`link386`) to **Open Watcom** (`wcc386`/`wlink`/`wrc`). The
 class version stays 1.1 (`majorversion = 1`, `minorversion = 1`), exactly as
 the original author declared it.
+
+## Author
+* Toru Aihara, IBM
+
+## License
+* BSD 3-Clause
 
 | | |
 |---|---|
@@ -66,26 +74,26 @@ an `override name1, name2;` list is not valid and produces
 ### 2.2 Runtime code (`src\mbfolder.c`)
 
 1. **`zString` removed.** `wpclsInitData` used a SOM 1.x string-class object
-   to receive `_somLocateClassFile`. With modern bindings the method returns
-   plain `PSZ`; `SOM_IdFromString` is spelled `somIdFromString`, and the
-   returned `somId` is released with `SOMFree`.
+to receive `_somLocateClassFile`. With modern bindings the method returns
+plain `PSZ`; `SOM_IdFromString` is spelled `somIdFromString`, and the
+returned `somId` is released with `SOMFree`.
 2. **PM/DOS prelude restored.** The old precompiler emitted
-   `INCL_WIN`, `INCL_DOS`, `INCL_GPIBITMAPS`, `INCL_WPCLASS`,
-   `INCL_WPFOLDER` + `#include <os2.h>` into its generated `.IH`
-   (`orig\MBFOLDER.IH:17-23`); modern `sc` emits nothing comparable, so the
-   prelude now lives at the top of `src\mbfolder.c` - required because
-   `wpobject.h` pulls in `<pmstddlg.h>`, which needs the base PM types.
+`INCL_WIN`, `INCL_DOS`, `INCL_GPIBITMAPS`, `INCL_WPCLASS`,
+`INCL_WPFOLDER` + `#include <os2.h>` into its generated `.IH`
+(`orig\MBFOLDER.IH:17-23`); modern `sc` emits nothing comparable, so the
+prelude now lives at the top of `src\mbfolder.c` - required because
+`wpobject.h` pulls in `<pmstddlg.h>`, which needs the base PM types.
 3. **Menu IDs rescued.** `ID_MBMENU`, `IDM_FOLDER`, `IDM_VIEW`,
-   `IDM_VIEW_ICON/TREE/DETAILS`, `IDM_MYHELP`, `IDM_MYHELP_TUTORIAL`,
-   `IDM_PRODUCTINFO` were emitted by the old precompiler into generated
-   headers; `sc` does not emit IDs. They now live in the hand-written
-   `h\mbids.h`. All sit above `WPMENUID_USER 0x6500` (`wpobject.h:230`).
+`IDM_VIEW_ICON/TREE/DETAILS`, `IDM_MYHELP`, `IDM_MYHELP_TUTORIAL`,
+`IDM_PRODUCTINFO` were emitted by the old precompiler into generated
+headers; `sc` does not emit IDs. They now live in the hand-written
+`h\mbids.h`. All sit above `WPMENUID_USER 0x6500` (`wpobject.h:230`).
 4. **No-instance-data cleanups.** The old toolchain always declared
-   `somThis = <Class>GetData(somSelf)` even for classes without instance
-   variables; since `sc` emits no accessor here, those lines (and an unused
-   `CNRINFO` local) were removed.
+`somThis = <Class>GetData(somSelf)` even for classes without instance
+variables; since `sc` emits no accessor here, those lines (and an unused
+`CNRINFO` local) were removed.
 5. Everything else - both helper routines (`UpdateContainer`,
-   `QueryDetailsView`) and the logic of all four overrides - is unchanged.
+`QueryDetailsView`) and the logic of all four overrides - is unchanged.
 
 ### 2.3 Module definition (`src\mbfolder.def`)
 
@@ -247,3 +255,4 @@ Toru Aihara - see `orig\LICENSE`. This port changes build plumbing, the
 interface format, and one legacy API usage; it introduces no behavioural
 change. Menu-bar concept, class design, and all credit text remain the
 original author's.
+
