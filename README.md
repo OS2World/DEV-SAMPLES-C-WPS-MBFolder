@@ -12,6 +12,8 @@ information. It was written by Toru Aihara (IBM Tokyo Research Laboratory,
 1993-01-29) as one of the first published Workplace Shell programming
 samples.
 
+![MBFolder ScreenShot](/doc/MBFolder.png)
+
 This edition converts the original from the long-obsolete **SOM 1.0
 precompiler** format to modern **SOM IDL**, and retargets the build from IBM
 C Set (`icc`/`link386`) to **Open Watcom** (`wcc386`/`wlink`/`wrc`). The
