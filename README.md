@@ -123,9 +123,18 @@ its own `#define INCL_WIN` + `<os2.h>` prelude so `wrc` sees the `MIS_*` /
 
 * `Makefile.wat` - Open Watcom build (`wcc386 -bd` -> `wlink SYSTEM
   OS2V2_DLL` -> `wrc`), replacing the original IBM NMAKE/VAC makefile.
-  Links against the toolkit-shipped `somtk.lib` (covers `SOM.DLL` *and*
-  the WPS class-data imports resolved to `PMWP.*`). No MAPSYM step:
+  `wlib -n -b -q` builds both `som.lib` and `pmwp.lib` from the live
+  system DLLs, avoiding `somtk.lib`'s transitive `somc`/`some`/`somtc`
+  dependencies.  `src\mbfolder.def` supplies the BLDLEVEL `OPTION
+  DESCRIPTION` string to wlink via `@$(MBFOLDERDEF)`.  No MAPSYM step:
   IBM `mapsym` cannot read Watcom map files.
+* **wlib** replaces the toolkit `somtk.lib`: `release\som.lib` from
+  `C:\OS2\DLL\som.dll` + `release\pmwp.lib` from `C:\OS2\DLL\pmwp.dll`
+  (wlib rejects `.def` EXPORTS files; it reads DLL export tables directly).
+* **BLDLEVEL string** embedded in `mbfolder.dll` via `OPTION DESCRIPTION`
+  in `src\mbfolder.def` (readable by `bldlevel mbfolder.dll`).
+* **`mk.cmd`** added: REXX build wrapper (runs `wmake clean` then a full
+  build, captures all output to `release\wmake.log`).
 * `genbind.cmd` - REXX harness that runs the SOM compiler once, on OS/2,
   with full logging (`release\genbind.log` summary, `release\sc_raw.log`
   raw compiler stdout+stderr via kLIBC `sh.exe`). It deliberately never
@@ -158,7 +167,8 @@ MBFolder-Watcom\
   h\mbfolder.ih/.h     sc-generated bindings (created by genbind.cmd)
   src\mbfolder.c       implementation (ported)
   src\mbfolder.rc      menu bar template
-  src\mbfolder.def     exports
+  mk.cmd               REXX build wrapper (clean + wmake, logs to release\wmake.log)
+  src\mbfolder.def     wlink directives (BLDLEVEL OPTION DESCRIPTION)
   release\             build outputs + logs (obj/res/dll/map, genbind.log,
                        sc_raw.log, sc_mbfolder_template.c)
   orig\                pristine 1993 sources (reference only)
@@ -168,19 +178,33 @@ MBFolder-Watcom\
 
 Prerequisites (ArcaOS Dev VM layout assumed; toolkit at `C:\os2tk45`):
 
-* Open Watcom (tested 2.0.1): `WATCOM` env var set, tools on PATH.
-* SOM compiler (`sc.exe`) reachable - on this VM it lives in
+* **Open Watcom v2** (wcc386, wlink, wrc, wlib, wmake): `WATCOM` env var
+  set, tools on PATH.
+* **SOM compiler** (`sc.exe`) reachable - on this VM it lives in
   `C:\os2tk45\som\bin`. Do **not** rely on bare `sc`: Open Watcom ships a
   different `SC.EXE` that shadows it on PATH.
 * `SMINCLUDE` containing the SOM/WPS IDL trees, e.g.
   `C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include`.
+* **`som.dll`** and **`pmwp.dll`** at `C:\OS2\DLL\` (standard on ArcaOS/OS/2);
+  both are read by `wlib` at build time to produce the import libraries.
 
 Steps:
 
 ```
-[OS/2]  genbind                      ; once, or whenever the .idl changes
-[OS/2]  wmake -f Makefile.wat        ; -> release\mbfolder.dll
+[OS/2]  genbind          ; once, or whenever the .idl changes
+[OS/2]  mk               ; clean + full build -> release\mbfolder.dll
 ```
+
+`mk.cmd` runs `wmake -f Makefile.wat clean` then a full build, capturing
+all output to `release\wmake.log`.
+
+Build sequence:
+1. `wcc386 -bd` compiles `src\mbfolder.c`.
+2. `wlib -n -b -q` builds `release\som.lib` from `C:\OS2\DLL\som.dll`
+   and `release\pmwp.lib` from `C:\OS2\DLL\pmwp.dll`.
+3. `wlink SYSTEM OS2V2_DLL` links `release\mbfolder.dll` with BLDLEVEL
+   `OPTION DESCRIPTION` from `src\mbfolder.def`.
+4. `wrc` compiles `src\mbfolder.rc` and binds it into the DLL.
 
 Include paths can be overridden without editing:
 `wmake -f Makefile.wat SOMINC=D:\path\som\include WPSINC=...`
@@ -203,7 +227,7 @@ credits. Uninstall with `deregister.cmd`. If the WPS misbehaves, check
   `h\mbfolder.ih` (16 KB).
 * Compile: clean except one benign toolkit warning
   (`sombtype.h(41) W1177 Modifier repeated`).
-* Link: zero unresolved symbols against `somtk.lib`.
+* Link: zero unresolved symbols against `release\som.lib` + `release\pmwp.lib` (from live DLLs via wlib).
 * `lx_export.py` on the DLL: all seven exports present
   (`MbFolderClassData`, `MbFolderCClassData`, `MbFolderNewClass`,
   `M_MbFolderClassData`, `M_MbFolderCClassData`, `M_MbFolderNewClass`,
@@ -225,6 +249,9 @@ credits. Uninstall with `deregister.cmd`. If the WPS misbehaves, check
 | `E1022 Missing or misspelled data type near 'LHANDLE'/'HWND'/...` in `pmstddlg.h` | PM base headers missing: put `INCL_WIN`/`INCL_DOS` defines + `#include <os2.h>` **before** including class bindings. |
 | `wrc` E049 syntax error near `MIS_TEXT` | Same root cause in the resource pass; add the `<os2.h>` prelude to the `.rc`. |
 | `mapsym: Unexpected eof reading ...map` | IBM MAPSYM cannot parse Watcom maps; intentionally skipped. Use `wdis -l` or the `.map` directly. |
+| `Error code: 2. Module information: SOMC` on register | `somtk.lib` was used instead of a live-DLL import lib. Run `mk` (cleans first) to rebuild with `release\som.lib` from `C:\OS2\DLL\som.dll`. |
+| Linker E2028 `WPFolderClassData` / `WPObjectClassData` / `M_WPFolder*` | Parent-class symbols from `pmwp.dll`; ensure `release\pmwp.lib` exists (built by wlib from `C:\OS2\DLL\pmwp.dll`). |
+| Linker E3033 directive error near `';'` | `src\mbfolder.def` contains a comment. wlink's directive parser rejects `;`. The file must contain ONLY the `OPTION DESCRIPTION` line. |
 | `wcc386` E062/wrc unable to open `mbids.h` | Include paths differ per tool; the `.rc` uses `..\h\mbids.h`, the C side uses `-Ih`. |
 
 ## 8. Facts verified against Toolkit 4.5 headers

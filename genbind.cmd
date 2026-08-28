@@ -85,22 +85,20 @@ scSh = translate(scexe, '/', '\')          /* forward slashes for sh      */
 shp  = SysSearchPath('PATH', 'SH.EXE')
 if shp <> '' then do
     call log 'shell     : sh.exe (stdout+stderr captured)'
-    ADDRESS CMD "sh.exe -c '"""scSh""" -s ""ih;h;c"" -v idl/mbfolder.idl > release/sc_raw.log 2>&1'"
+    ADDRESS CMD "sh.exe -c '"""scSh""" -s ""ih;h;c"" -d h -v idl/mbfolder.idl > release/sc_raw.log 2>&1'"
 end
 else do
     call log 'shell     : cmd.exe only (stdout captured; stderr stays on console)'
-    ADDRESS CMD '"'||scexe||'" -s "ih;h;c" -v idl\mbfolder.idl > release\sc_raw.log'
+    ADDRESS CMD '"'||scexe||'" -s "ih;h;c" -d h -v idl\mbfolder.idl > release\sc_raw.log'
 end
 scrc = rc
 call log 'sc rc     : ' scrc
 call log 'raw sc out: ' sclog
 
-ADDRESS CMD 'if exist mbfolder.ih move mbfolder.ih h >nul'
-ADDRESS CMD 'if exist mbfolder.h  move mbfolder.h  h >nul'
-/* keep the emitted template .c as reference for SOMInitModule etc.,   */
-/* but out of the build path (src\mbfolder.c is hand-ported)           */
-ADDRESS CMD 'if exist mbfolder.c  copy mbfolder.c  release\sc_mbfolder_template.c >nul'
-ADDRESS CMD 'if exist mbfolder.c  del  mbfolder.c'
+/* sc -d h writes .ih/.h/.c directly into h\ - no move needed for bindings */
+/* keep the emitted template .c as reference only; h\ is headers, not src  */
+ADDRESS CMD 'if exist h\mbfolder.c  copy h\mbfolder.c  release\sc_mbfolder_template.c >nul'
+ADDRESS CMD 'if exist h\mbfolder.c  del  h\mbfolder.c'
 
 if stream(ih, 'C', 'QUERY EXISTS') <> '' ,
    & stream(hhdr, 'C', 'QUERY EXISTS') <> '' then do

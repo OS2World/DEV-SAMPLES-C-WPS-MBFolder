@@ -22,9 +22,14 @@
 #      WPSINC at one containing pmwin.h, wpobject.h, wpfolder.h, ...
 #      (the INCLUDE environment variable must also contain h\ for wrc,
 #       which picks up mbids.h from there.)
-#   4. SOMLIB/WPSLIB: import libraries for SOM.DLL and for the Workplace
-#      class DLLs exporting the WP*ClassData method-token structures
-#      (the toolkit's somtk.lib covers these - see README.md "Building")
+#   4. Import libraries built by wlib from the live system DLLs:
+#        wlib -n -b -q release\som.lib  +C:\OS2\DLL\som.dll
+#        wlib -n -b -q release\pmwp.lib +C:\OS2\DLL\pmwp.dll
+#      som.dll covers SOM runtime; pmwp.dll covers the WPFolder parent-chain
+#      class-data symbols (WPFolder/WPObject ClassData/NewClass).
+#      Using live DLLs avoids somtk.lib's transitive somc/some/somtc deps.
+#   5. src\mbfolder.def contains the wlink OPTION DESCRIPTION (BLDLEVEL
+#      string) referenced from LFLAGS via @$(MBFOLDERDEF).
 #****************************************************************************
 
 WATCOM  = $(%WATCOM)
@@ -37,22 +42,25 @@ WATCOM  = $(%WATCOM)
 SOMINC  = C:\os2tk45\som\include
 # WPSINC : pmwin.h, wpobject.h, wpfolder.h, ...
 WPSINC  = C:\os2tk45\h
-# import library for SOM.DLL - shipped with the toolkit
-SOMLIB  = C:\os2tk45\som\lib\somtk.lib
-# Import library for the WPS class-data exports (WP*ClassData): built on
-# the VM with IMPLIB once the linker has named the DLLs it needs; not
-# referenced below until then (wlink aborts on a missing .lib before
-# listing unresolved symbols).
-WPSLIB  =
+# import library for SOM.DLL - built from the live DLL via wlib (avoids
+# somtk.lib's transitive somc/some/somtc dependencies).
+SOMDLL  = C:\OS2\DLL\som.dll
+SOMLIB  = $(OUT)\som.lib
+# Import library for WPS class-data exports (WPFolder/WPObject ClassData/
+# NewClass): built from pmwp.dll via wlib.
+PMWPDLL = C:\OS2\DLL\pmwp.dll
+WPSLIB  = $(OUT)\pmwp.lib
 # ---------------------------------------------------------------------------
 
 HDIR    = h
 SRC     = src
 OUT     = release
+MBFOLDERDEF = $(SRC)\mbfolder.def
 
 CC      = wcc386
 LINK    = wlink
 RC      = wrc
+WLIB    = wlib
 
 # Calling-convention note: SOMLINK stays EMPTY under Watcom (somltype.h has
 # no __WATCOMC__ case) - do not -d-define it (E1100 macro conflict).  Linkage
@@ -67,11 +75,10 @@ EXPS    = EXP MbFolderClassData EXP MbFolderCClassData EXP MbFolderNewClass &
           EXP M_MbFolderClassData EXP M_MbFolderCClassData EXP M_MbFolderNewClass &
           EXP SOMInitModule
 
-# When the WPS import library exists (see WPSLIB above), extend to:
-#           LIBF $(SOMLIB),$(WPSLIB) $(EXPS)
 LFLAGS  = SYSTEM OS2V2_DLL NAME $(OUT)\mbfolder.dll &
           OP MAP=$(OUT)\mbfolder.map &
-          LIBF $(SOMLIB) $(EXPS)
+          @$(MBFOLDERDEF) &
+          LIBF $(SOMLIB),$(WPSLIB) $(EXPS)
 
 all : $(OUT)\mbfolder.dll
 
@@ -84,7 +91,13 @@ $(OUT)\mbfolder.res : $(SRC)\mbfolder.rc $(HDIR)\mbids.h
     copy $(SRC)\mbfolder.res $(OUT)
     del $(SRC)\mbfolder.res
 
-$(OUT)\mbfolder.dll : $(OUT)\mbfolder.obj $(OUT)\mbfolder.res $(SRC)\mbfolder.def
+$(OUT)\som.lib : $(SOMDLL)
+    $(WLIB) -n -b -q $@ +$(SOMDLL)
+
+$(OUT)\pmwp.lib : $(PMWPDLL)
+    $(WLIB) -n -b -q $@ +$(PMWPDLL)
+
+$(OUT)\mbfolder.dll : $(OUT)\mbfolder.obj $(OUT)\mbfolder.res $(MBFOLDERDEF) $(SOMLIB) $(WPSLIB)
     $(LINK) $(LFLAGS) FIL $(OUT)\mbfolder.obj
     $(RC) $(OUT)\mbfolder.res $(OUT)\mbfolder.dll
 # No MAPSYM step: IBM mapsym rejects Watcom's map format ("Unexpected eof"),
@@ -97,6 +110,7 @@ bindings : .SYMBOLIC
 clean : .SYMBOLIC
     -del $(OUT)\mbfolder.obj
     -del $(OUT)\mbfolder.res
+    -del $(OUT)\*.lib
     -del $(OUT)\mbfolder.dll
     -del $(OUT)\mbfolder.map
     -del $(OUT)\mbfolder.sym

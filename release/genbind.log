@@ -1,8 +1,0 @@
-=== genbind start  23 Aug 2026 21:51:44  ===
-cwd       :  D:\SWtest\MBFolder-Watcom
-sc        :  C:\os2tk45\som\bin\SC.EXE
-SMINCLUDE : (from environment)  C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include;
-shell     : sh.exe (stdout+stderr captured)
-sc rc     :  0
-raw sc out:  release\sc_raw.log
-RESULT    : OK - h\mbfolder.ih and h\mbfolder.h written.
