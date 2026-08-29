@@ -1,0 +1,14 @@
+# CRLF is required for OS/2 REXX files (.cmd); the OS/2 REXX interpreter
+# rejects LF-only line endings.  All other source files use LF.
+
+*.cmd  eol=crlf
+
+*.c    eol=lf
+*.h    eol=lf
+*.ih   eol=lf
+*.rh   eol=lf
+*.rc   eol=lf
+*.idl  eol=lf
+*.def  eol=lf
+*.wat  eol=lf
+*.md   eol=lf
